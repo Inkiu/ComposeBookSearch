@@ -16,10 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.jetnews.presentation.model.BookModel
 import com.example.jetnews.presentation.ui.book.BookRow
 import com.example.jetnews.ui.theme.JetnewsTheme
 import com.example.jetnews.presentation.ui.widget.SearchInput
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 private fun SearchScreen(
@@ -60,13 +63,16 @@ private fun HasBooksContent(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     state: LazyListState = rememberLazyListState(),
 ) {
+    val pagingItems = uiState.books.collectAsLazyPagingItems()
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         contentPadding = contentPadding,
         state = state
     ) {
-        uiState.books.forEach {
-            item {
+        items(
+            count = pagingItems.itemCount
+        ) { index ->
+            pagingItems[index]?.let {
                 BookRow(book = it, onClickBook = onClickBook)
             }
         }
@@ -124,6 +130,10 @@ fun PreviewSearchScreen() {
                 released = System.currentTimeMillis(),
                 isFavorite = true
             )
+        }.let {
+            PagingData.from(it)
+        }.let {
+            flowOf(it)
         }
     JetnewsTheme {
         SearchScreen(

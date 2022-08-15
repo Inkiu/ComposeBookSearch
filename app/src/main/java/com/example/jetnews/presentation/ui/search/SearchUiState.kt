@@ -1,6 +1,8 @@
 package com.example.jetnews.presentation.ui.search
 
+import androidx.paging.PagingData
 import com.example.jetnews.presentation.model.BookModel
+import kotlinx.coroutines.flow.Flow
 
 sealed interface SearchUiState {
 
@@ -13,7 +15,7 @@ sealed interface SearchUiState {
     ) : SearchUiState
 
     data class HasBooks(
-        val books: List<BookModel>,
+        val books: Flow<PagingData<BookModel>>,
         override val isLoading: Boolean,
         override val keyword: String
     ) : SearchUiState
