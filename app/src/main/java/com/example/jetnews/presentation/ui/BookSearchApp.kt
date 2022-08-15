@@ -1,5 +1,12 @@
 package com.example.jetnews.presentation.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,7 +32,10 @@ fun BookSearchApp(
             factory = object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel(locator.pagingUseCase) as T
+                    return SearchViewModel(
+                        locator.pagingUseCase,
+                        locator.updateUseCase
+                    ) as T
                 }
             }
         )
@@ -33,9 +43,17 @@ fun BookSearchApp(
 
         SearchScreen(
             uiState = viewState.mapUiState(),
-            modifier = Modifier,
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .windowInsetsPadding(
+                    WindowInsets
+                        .navigationBars
+                        .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+                ),
             onSearchKeywordChanged = { viewModel.search(it) },
-            onClickBook = {}
+            onClickBook = {},
+            onClickBookmark = { viewModel.toggleLike(it) }
         )
     }
 }

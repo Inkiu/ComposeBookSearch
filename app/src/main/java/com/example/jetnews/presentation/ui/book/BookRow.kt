@@ -35,6 +35,7 @@ import com.skydoves.landscapist.glide.GlideImage
 fun BookRow(
     book: BookModel,
     onClickBook: (BookModel) -> Unit,
+    onClickBookmark: (BookModel) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -61,7 +62,7 @@ fun BookRow(
         Spacer(modifier = Modifier.padding(horizontal = 3.dp))
         IconToggleButton(
             checked = book.isFavorite,
-            onCheckedChange = { onClickBook(book) },
+            onCheckedChange = { onClickBookmark(book) },
             modifier = Modifier
         ) {
             Icon(
@@ -90,7 +91,8 @@ fun PreviewBookRow() {
     JetnewsTheme {
         BookRow(
             book = book,
-            onClickBook = {}
+            onClickBook = {},
+            onClickBookmark = {}
         )
     }
 }

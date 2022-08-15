@@ -7,6 +7,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.example.jetnews.domain.entity.BookEntity
 import com.example.jetnews.domain.usecase.GetBookSearchPagingDataUseCase
+import com.example.jetnews.domain.usecase.UpdateBookLikeUseCase
 import com.example.jetnews.presentation.model.BookModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -19,10 +20,12 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
 class SearchViewModel(
     private val getBookSearchUseCase: GetBookSearchPagingDataUseCase,
+    private val updateBookLikeUseCase: UpdateBookLikeUseCase,
 ) : ViewModel() {
 
     private val _queryFlow = MutableStateFlow("Kotlin")
@@ -50,6 +53,13 @@ class SearchViewModel(
 
     fun search(searchStr: String) {
         _queryFlow.update { searchStr }
+    }
+
+    fun toggleLike(bookModel: BookModel) = viewModelScope.launch {
+        updateBookLikeUseCase(
+            bookModel.id,
+            !bookModel.isFavorite
+        )
     }
 
 }

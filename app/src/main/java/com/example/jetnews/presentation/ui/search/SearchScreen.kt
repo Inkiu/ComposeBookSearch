@@ -30,6 +30,7 @@ fun SearchScreen(
     modifier: Modifier,
     onSearchKeywordChanged: (String) -> Unit,
     onClickBook: (BookModel) -> Unit,
+    onClickBookmark: (BookModel) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -43,7 +44,8 @@ fun SearchScreen(
         when (uiState) {
             is SearchUiState.HasBooks -> HasBooksContent(
                 uiState = uiState,
-                onClickBook = onClickBook
+                onClickBook = onClickBook,
+                onClickBookmark = onClickBookmark,
             )
             is SearchUiState.NoBooks -> NoBooksContent(
                 uiState = uiState
@@ -59,6 +61,7 @@ fun SearchScreen(
 private fun HasBooksContent(
     uiState: SearchUiState.HasBooks,
     onClickBook: (BookModel) -> Unit,
+    onClickBookmark: (BookModel) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     state: LazyListState = rememberLazyListState(),
@@ -73,7 +76,7 @@ private fun HasBooksContent(
             count = pagingItems.itemCount
         ) { index ->
             pagingItems[index]?.let {
-                BookRow(book = it, onClickBook = onClickBook)
+                BookRow(book = it, onClickBook = onClickBook, onClickBookmark = onClickBookmark)
             }
         }
     }
@@ -144,7 +147,8 @@ fun PreviewSearchScreen() {
             ),
             modifier = Modifier,
             onSearchKeywordChanged = {},
-            onClickBook = {}
+            onClickBook = {},
+            onClickBookmark = {}
         )
     }
 }
@@ -160,7 +164,8 @@ fun PreviewSearchScreenNoBook() {
             ),
             modifier = Modifier,
             onSearchKeywordChanged = {},
-            onClickBook = {}
+            onClickBook = {},
+            onClickBookmark = {}
         )
     }
 }
@@ -177,7 +182,8 @@ fun PreviewSearchScreenError() {
             ),
             modifier = Modifier,
             onSearchKeywordChanged = {},
-            onClickBook = {}
+            onClickBook = {},
+            onClickBookmark = {}
         )
     }
 }

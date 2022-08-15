@@ -10,7 +10,7 @@ import com.example.jetnews.presentation.ui.BookSearchApp
 class BookActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val appLocator = (application as JetnewsApplication).locator
         setContent {
