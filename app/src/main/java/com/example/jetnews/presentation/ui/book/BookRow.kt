@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
@@ -42,14 +44,14 @@ fun BookRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         GlideImage(
+            modifier = Modifier.height(50.dp).width(50.dp),
             imageModel = book.thumbUrl,
             contentScale = ContentScale.FillWidth,
-            circularReveal = CircularReveal(duration = 250),
             placeHolder = ImageBitmap.imageResource(R.mipmap.sym_def_app_icon),
-            error = ImageBitmap.imageResource(R.drawable.stat_notify_error),
+            error = ImageBitmap.imageResource(R.mipmap.sym_def_app_icon),
             previewPlaceholder = R.mipmap.sym_def_app_icon
         )
-        Spacer(modifier = Modifier.padding(horizontal = 3.dp))
+        Spacer(modifier = Modifier.padding(horizontal = 6.dp))
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -74,7 +76,7 @@ fun BookRow(
 @Composable
 fun PreviewBookRow() {
     val book = BookModel(
-        id = 0L,
+        id = "",
         thumbUrl = "",
         title = "Sample Book",
         content = "Sample Content",

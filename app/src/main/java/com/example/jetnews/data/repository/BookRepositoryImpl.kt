@@ -1,5 +1,6 @@
 package com.example.jetnews.data.repository
 
+import android.util.Log
 import androidx.paging.*
 import com.example.jetnews.data.api.BookApiService
 import com.example.jetnews.data.data.BookData
@@ -30,7 +31,11 @@ class BookRepositoryImpl(
         cache.clear() // 쿼리가 바뀌었으니 NOTE 개선 필요함
         return likeDao.getAll().flatMapLatest { likeList ->
             Pager(
-                config = PagingConfig(pageSize = 50, enablePlaceholders = false),
+                config = PagingConfig(
+                    initialLoadSize = 50,
+                    pageSize = 50,
+                    enablePlaceholders = false
+                ),
                 pagingSourceFactory = {
                     BookPagingDataSource(query = query, api = api, cache = cache)
                 }
@@ -42,7 +47,7 @@ class BookRepositoryImpl(
         }
     }
 
-    override fun getBook(id: Long): Flow<BookEntity> {
+    override fun getBook(id: String): Flow<BookEntity> {
         val data = cache.find { it.id == id }
             ?: throw NoSuchElementException("id $id entity is not exist!")
 
@@ -52,7 +57,7 @@ class BookRepositoryImpl(
             }
     }
 
-    override suspend fun updateBookLike(id: Long, like: Boolean) {
+    override suspend fun updateBookLike(id: String, like: Boolean) {
         if (like) {
             likeDao.insert(BookDBLikeEntity(id))
         } else {
@@ -61,7 +66,7 @@ class BookRepositoryImpl(
     }
 
     private fun BookData.toEntity(liked: Boolean) = BookEntity(
-        id = id,
+        isbn = id,
         thumbUrl = thumbUrl,
         title = title,
         content = content,
@@ -80,7 +85,7 @@ class BookRepositoryImpl(
     ): PagingSource<Int, BookData>() {
 
         private val dateFormat = SimpleDateFormat(
-            "yyyy-MM-DDThh:mm:ss.000+tz",
+            "yyyy-MM-DD hh:mm:ss",
             Locale.KOREA
         )
 
@@ -97,7 +102,7 @@ class BookRepositoryImpl(
                 val pageSize = params.loadSize
                 val requestedPage = params.key ?: 1
                 val apiRequest = suspend {
-                    api.getBookList(query = query, page = requestedPage, size = pageSize)
+                    api.getBookList(query = query, page = requestedPage, size = pageSize, target = "title")
                         .documents.map { it.toData(dateFormat) }
                 }
 
@@ -109,16 +114,17 @@ class BookRepositoryImpl(
                     if (data.isEmpty()) {
                         data
                     } else {
-                        data.subList(0, (data.size % pageSize) * pageSize)
+                        data.subList(0, pageSize - (data.size % pageSize))
                     }
                 }
 
                 LoadResult.Page(
                     data = data,
                     prevKey = null,
-                    nextKey = if (data.isEmpty()) null else (data.size % pageSize) + 1
+                    nextKey = if (data.isEmpty()) null else requestedPage + 1
                 )
             }.getOrElse {
+                it.printStackTrace()
                 LoadResult.Error(it)
             }
         }
@@ -126,7 +132,7 @@ class BookRepositoryImpl(
         private fun BookApiItemResponse.toData(
             dateFormat: DateFormat
         ) = BookData(
-            id = (isbn ?: "0").substringBefore(" ").toLong(),
+            id = isbn ?: "",
             thumbUrl = thumbnail ?: "",
             title = title ?: "",
             content = contents ?: "",
@@ -134,7 +140,8 @@ class BookRepositoryImpl(
             translators = translators ?: emptyList(),
             publisher = publisher ?: "",
             price = price ?: 0L,
-            released = dateFormat.parse(datetime ?: "")?.time ?: 0L,
+//            released = dateFormat.parse(datetime ?: "")?.time ?: 0L,
+            released = System.currentTimeMillis(),
         )
 
     }

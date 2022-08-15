@@ -1,7 +1,7 @@
 package com.example.jetnews.presentation.model
 
 data class BookModel(
-    val id: Long,
+    val id: String,
     val thumbUrl: String,
     val title: String,
     val content: String,

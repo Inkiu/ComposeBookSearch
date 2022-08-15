@@ -1,7 +1,7 @@
 package com.example.jetnews.data.data
 
 data class BookData(
-    val id: Long,
+    val id: String,
     val thumbUrl: String,
     val title: String,
     val content: String,

@@ -22,6 +22,6 @@ internal interface BookDbLikeEntityDao {
     fun getAll(): Flow<List<BookDBLikeEntity>>
 
     @Query("DELETE FROM book_db_like_entity WHERE id = :id")
-    suspend fun delete(id: Long)
+    suspend fun delete(id: String)
 
 }

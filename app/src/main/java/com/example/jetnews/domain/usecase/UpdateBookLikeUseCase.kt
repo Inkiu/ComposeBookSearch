@@ -6,7 +6,7 @@ class UpdateBookLikeUseCase(
     private val repository: BookRepository
 ) {
     suspend operator fun invoke(
-        id: Long,
+        id: String,
         like: Boolean
     ) = repository.updateBookLike(id, like)
 }

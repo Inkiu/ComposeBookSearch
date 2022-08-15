@@ -8,19 +8,29 @@ import androidx.paging.map
 import com.example.jetnews.domain.entity.BookEntity
 import com.example.jetnews.domain.usecase.GetBookSearchPagingDataUseCase
 import com.example.jetnews.presentation.model.BookModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
+@OptIn(FlowPreview::class)
 class SearchViewModel(
     private val getBookSearchUseCase: GetBookSearchPagingDataUseCase,
 ) : ViewModel() {
 
-    private val _queryFlow = MutableStateFlow("")
+    private val _queryFlow = MutableStateFlow("Kotlin")
+    private val _delayedQueryFlow = _queryFlow
+        .filter { it.isNotEmpty() }
+        .debounce(1000L)
 
-    private val _pagingDataFlow = _queryFlow
+    private val _pagingDataFlow = _delayedQueryFlow
         .map { query ->
             getBookSearchUseCase(query)
                 .map { paging -> paging.map { it.map() } }
@@ -36,7 +46,7 @@ class SearchViewModel(
             pagingData = pagingData,
             isLoading = false
         )
-    }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, SearchBookViewState.EMPTY)
 
     fun search(searchStr: String) {
         _queryFlow.update { searchStr }
@@ -48,10 +58,18 @@ data class SearchBookViewState(
     val query: String,
     val pagingData: Flow<PagingData<BookModel>>,
     val isLoading: Boolean
-)
+) {
+    companion object {
+        val EMPTY = SearchBookViewState(
+            query = "",
+            pagingData = flowOf(PagingData.empty()),
+            isLoading = false
+        )
+    }
+}
 
 private fun BookEntity.map() = BookModel(
-    id = id,
+    id = isbn,
     thumbUrl = thumbUrl,
     title = title,
     content = content,

@@ -10,7 +10,8 @@ interface BookApiService {
     suspend fun getBookList(
         @Query("query") query: String,
         @Query("page") page: Int,
-        @Query("size") size: Int
+        @Query("size") size: Int,
+        @Query("target") target: String,
     ) : BookApiResponse
 
 }

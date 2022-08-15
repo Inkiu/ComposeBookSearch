@@ -1,7 +1,7 @@
 package com.example.jetnews.domain.entity
 
 data class BookEntity(
-    val id: Long,
+    val isbn: String,
     val thumbUrl: String,
     val title: String,
     val content: String,

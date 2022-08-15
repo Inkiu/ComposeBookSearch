@@ -8,6 +8,6 @@ class GetBookUseCase(
     private val repository: BookRepository
 ) {
     operator fun invoke(
-        id: Long
+        id: String
     ): Flow<BookEntity> = repository.getBook(id)
 }

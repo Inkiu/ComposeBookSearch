@@ -8,8 +8,8 @@ interface BookRepository {
 
     fun getBookPagingDataFlow(query: String): Flow<PagingData<BookEntity>>
 
-    fun getBook(id: Long): Flow<BookEntity>
+    fun getBook(id: String): Flow<BookEntity>
 
-    suspend fun updateBookLike(id: Long, like: Boolean)
+    suspend fun updateBookLike(id: String, like: Boolean)
 
 }

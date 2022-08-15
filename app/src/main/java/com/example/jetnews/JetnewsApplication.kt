@@ -19,14 +19,25 @@ package com.example.jetnews
 import android.app.Application
 import com.example.jetnews.data.AppContainer
 import com.example.jetnews.data.AppContainerImpl
+import com.example.jetnews.data.DataServiceLocatorImpl
+import com.example.jetnews.domain.DomainServiceLocator
+import com.example.jetnews.domain.DomainServiceLocatorImpl
 
 class JetnewsApplication : Application() {
 
     // AppContainer instance used by the rest of classes to obtain dependencies
     lateinit var container: AppContainer
 
+    lateinit var locator: DomainServiceLocator
+
     override fun onCreate() {
         super.onCreate()
         container = AppContainerImpl(this)
+
+        locator = DomainServiceLocatorImpl(
+            data = DataServiceLocatorImpl(
+                applicationContext = this
+            )
+        )
     }
 }

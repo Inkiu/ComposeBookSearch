@@ -12,5 +12,5 @@ import androidx.room.PrimaryKey
 internal data class BookDBLikeEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "id")
-    val id: Long,
+    val id: String,
 )

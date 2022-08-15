@@ -25,7 +25,7 @@ import com.example.jetnews.presentation.ui.widget.SearchInput
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-private fun SearchScreen(
+fun SearchScreen(
     uiState: SearchUiState,
     modifier: Modifier,
     onSearchKeywordChanged: (String) -> Unit,
@@ -119,7 +119,7 @@ fun PreviewSearchScreen() {
     val dummyBooks = (0 until 100)
         .map {
             BookModel(
-                id = it.toLong(),
+                id = it.toString(),
                 thumbUrl = "",
                 title = "Sample Book",
                 content = "Sample Content",

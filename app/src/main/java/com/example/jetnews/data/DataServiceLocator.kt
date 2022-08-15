@@ -1,6 +1,5 @@
 package com.example.jetnews.data
 
-import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.example.jetnews.data.api.BookApiService
@@ -67,7 +66,7 @@ private class ApiProvider(
             addInterceptor {
                 val request = it.request()
                     .newBuilder()
-                    .addHeader("Authorization", "KakaoAK 2397ff9db0b53a68adb735a74c8c1a5a")
+                    .addHeader("Authorization", "KakaoAK 31b9d38adf1b48955225f9ca3686ead8")
                     .build()
                 it.proceed(request)
             }
